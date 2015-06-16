@@ -36,11 +36,12 @@ program
     watson.transformEmberDataAsyncFalseRelationships(appPath, program.dryRun);
   });
 
-program.command('all')
+program.command('all [appRoot]')
   .description('run all Watson formulas')
-  .action(function() {
-    var testsPath = 'tests';
-    var appPath = 'app';
+  .action(function(appRoot) {
+    appRoot = appRoot || '.';
+    var testsPath = appRoot + '/tests';
+    var appPath = appRoot + '/app';
     watson.transformQUnitTest(testsPath, program.dryRun)
     watson.transformPrototypeExtensions(appPath, program.dryRun)
     watson.transformEmberDataModelLookups(appPath, program.dryRun);
