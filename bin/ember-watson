@@ -46,7 +46,7 @@ program.command('all [appRoot]')
     watson.transformPrototypeExtensions(appPath, program.dryRun)
     watson.transformEmberDataModelLookups(appPath, program.dryRun);
     watson.transformEmberDataAsyncFalseRelationships(appPath, program.dryRun);
-  });
+  })
 
 program
   .version('0.5.0')
