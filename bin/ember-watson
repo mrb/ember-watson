@@ -4,12 +4,17 @@ var program = require('commander');
 var Watson = require('../index');
 var watson = new Watson();
 
+function collectMultipleArgs(val, memo) {
+  memo.push(val);
+  return memo;
+}
+
 program
   .command('upgrade-qunit-tests [testsPath]')
   .description('Fix QUnit tests to match 2.0 syntax. testsPath defaults to tests/')
   .action(function(testsPath){
     testsPath = testsPath || 'tests';
-    watson.transformQUnitTest(testsPath, program.dryRun)
+    watson.transformQUnitTest(testsPath, program.dryRun, program.exclude)
   });
 
 program
@@ -17,7 +22,7 @@ program
   .description('Convert computed properties and observers to not use prototype extensions. appPath defaults to app/')
   .action(function(appPath){
     appPath = appPath || 'app';
-    watson.transformPrototypeExtensions(appPath, program.dryRun)
+    watson.transformPrototypeExtensions(appPath, program.dryRun, program.exclude)
   });
 
 program
@@ -25,7 +30,7 @@ program
   .description('convert Ember Data model lookups to use a dasherized string')
   .action(function(appPath) {
     appPath = appPath || 'app';
-    watson.transformEmberDataModelLookups(appPath, program.dryRun);
+    watson.transformEmberDataModelLookups(appPath, program.dryRun, program.exclude);
   });
 
 program
@@ -33,7 +38,7 @@ program
   .description('convert Ember Data relationship with implicit async: false to explicit option')
   .action(function(appPath) {
     appPath = appPath || 'app';
-    watson.transformEmberDataAsyncFalseRelationships(appPath, program.dryRun);
+    watson.transformEmberDataAsyncFalseRelationships(appPath, program.dryRun, program.exclude);
   });
 
 program.command('all [appRoot]')
@@ -42,13 +47,14 @@ program.command('all [appRoot]')
     appRoot = appRoot || '.';
     var testsPath = appRoot + '/tests';
     var appPath = appRoot + '/app';
-    watson.transformQUnitTest(testsPath, program.dryRun)
-    watson.transformPrototypeExtensions(appPath, program.dryRun)
-    watson.transformEmberDataModelLookups(appPath, program.dryRun);
-    watson.transformEmberDataAsyncFalseRelationships(appPath, program.dryRun);
+    watson.transformQUnitTest(testsPath, program.dryRun, program.exclude)
+    watson.transformPrototypeExtensions(appPath, program.dryRun, program.exclude)
+    watson.transformEmberDataModelLookups(appPath, program.dryRun, program.exclude);
+    watson.transformEmberDataAsyncFalseRelationships(appPath, program.dryRun, program.exclude);
   })
 
 program
   .version('0.5.0')
   .option('-d, --dry-run', 'output issues but do no change source')
+  .option('-e, --exclude <file>', 'exclude file', collectMultipleArgs, [])
   .parse(process.argv);
