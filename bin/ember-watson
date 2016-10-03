@@ -4,6 +4,11 @@ var program = require('commander');
 var Watson = require('../index');
 var watson = new Watson();
 
+// Redirect `console.log` so that we are the only ones
+// writing to STDOUT
+var stdout = console.log;
+console.log = console.error;
+
 function collectMultipleArgs(val, memo) {
   memo.push(val);
   return memo;
